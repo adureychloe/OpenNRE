@@ -46,11 +46,11 @@ class BaseEncoder(nn.Module):
         self.blank_padding = blank_padding
 
         if not '[UNK]' in self.token2id:
-            self.token2id['[UNK]'] = len(self.token2id)
-            self.num_token += 1
+            self.token2id['[UNK]'] = len(self.token2id) # add "UNK" into token2id's tail
+            self.num_token += 1                                      # token number +1
         if not '[PAD]' in self.token2id:
-            self.token2id['[PAD]'] = len(self.token2id)
-            self.num_token += 1
+            self.token2id['[PAD]'] = len(self.token2id)# add "PAD" into token2id's tail
+            self.num_token += 1                                     # token number +1
 
         # Word embedding
         self.word_embedding = nn.Embedding(self.num_token, self.word_size)
@@ -62,7 +62,7 @@ class BaseEncoder(nn.Module):
                 blk = torch.zeros(1, self.word_size)
                 self.word_embedding.weight.data.copy_(torch.cat([word2vec, unk, blk], 0))
             else:
-                self.word_embedding.weight.data.copy_(word2vec)
+                self.word_embedding.weight.data.copy_(word2vec)  # weight init
 
         # Position Embedding
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
@@ -72,6 +72,7 @@ class BaseEncoder(nn.Module):
     def forward(self, token, pos1, pos2):
         """
         Args:
+            B：batch_size, L : sequence_length, H : channel_num
             token: (B, L), index of tokens
             pos1: (B, L), relative position to head entity
             pos2: (B, L), relative position to tail entity
@@ -101,7 +102,7 @@ class BaseEncoder(nn.Module):
         if not is_token:
             if pos_head[0] > pos_tail[0]:
                 pos_min, pos_max = [pos_tail, pos_head]
-                rev = True
+                rev = True  # reverse
             else:
                 pos_min, pos_max = [pos_head, pos_tail]
                 rev = False
@@ -115,7 +116,7 @@ class BaseEncoder(nn.Module):
                 ent_1 = ['[UNK]']
             tokens = sent_0 + ent_0 + sent_1 + ent_1 + sent_2
             if rev:
-                pos_tail = [len(sent_0), len(sent_0) + len(ent_0)]
+                pos_tail = [len(sent_0), len(sent_0) + len(ent_0)] # relative position in tokens
                 pos_head = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]
             else:
                 pos_head = [len(sent_0), len(sent_0) + len(ent_0)]

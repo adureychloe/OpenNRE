@@ -33,7 +33,7 @@ class WordTokenizer(object):
 
     def __init__(self, vocab = None, unk_token="[UNK]"):
         self.vocab = load_vocab(vocab)
-        self.inv_vocab = {v: k for k, v in self.vocab.items()}
+        self.inv_vocab = {v: k for k, v in self.vocab.items()} # {token : index}
         self.unk_token = unk_token
 
     def tokenize(self, text):

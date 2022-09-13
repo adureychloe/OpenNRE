@@ -18,7 +18,7 @@ class SoftmaxNN(SentenceRE):
         self.sentence_encoder = sentence_encoder
         self.num_class = num_class
         self.fc = nn.Linear(self.sentence_encoder.hidden_size, num_class)
-        self.softmax = nn.Softmax(-1)
+        self.softmax = nn.Softmax(-1)    # calculate the softmax for the last dim
         self.rel2id = rel2id
         self.id2rel = {}
         self.drop = nn.Dropout()

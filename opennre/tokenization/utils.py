@@ -147,15 +147,15 @@ def load_vocab(vocab_file):
     if vocab_file ==  None:
         raise Exception("Vocab file not provided")
     if isinstance(vocab_file, str) or isinstance(vocab_file, bytes):
-        vocab = collections.OrderedDict()
+        vocab = collections.OrderedDict() # create ordered dict
         index = 0
         with open(vocab_file, "r", encoding="utf-8") as reader:
             while True:
                 token = reader.readline()
                 if not token:
-                    break
+                    break                      # finish reading
                 token = token.strip()
-                vocab[token] = index
+                vocab[token] = index  # {token : idx}
                 index += 1
         return vocab
     else:

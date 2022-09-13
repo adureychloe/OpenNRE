@@ -1,5 +1,6 @@
-from . import encoder
-from . import model
+
+from opennre import encoder
+from opennre import model
 from . import framework
 import torch
 import os
@@ -9,7 +10,9 @@ import numpy as np
 import logging
 
 root_url = "https://thunlp.oss-cn-qingdao.aliyuncs.com/"
-default_root_path = os.path.join(os.getenv('HOME'), '.opennre')
+default_root_path = os.path.abspath("..")
+
+
 
 def check_root(root_path=default_root_path):
     if not os.path.exists(root_path):
@@ -130,10 +133,10 @@ def get_model(model_name, root_path=default_root_path):
         download_pretrain(model_name, root_path=root_path)
         download('glove', root_path=root_path)
         download('wiki80', root_path=root_path)
-        wordi2d = json.load(open(os.path.join(root_path, 'pretrain/glove/glove.6B.50d_word2id.json')))
+        word2id = json.load(open(os.path.join(root_path, 'pretrain/glove/glove.6B.50d_word2id.json')))
         word2vec = np.load(os.path.join(root_path, 'pretrain/glove/glove.6B.50d_mat.npy'))
         rel2id = json.load(open(os.path.join(root_path, 'benchmark/wiki80/wiki80_rel2id.json')))
-        sentence_encoder = encoder.CNNEncoder(token2id=wordi2d,
+        sentence_encoder = encoder.CNNEncoder(token2id=word2id,
                                                      max_length=40,
                                                      word_size=50,
                                                      position_size=5,
@@ -176,3 +179,6 @@ def get_model(model_name, root_path=default_root_path):
         return m
     else:
         raise NotImplementedError
+
+get_model('wiki80_bert_softmax')
+model.infer({'text': 'He was the son of Máel Dúin mac Máele Fithrich, and grandson of the high king Áed Uaridnach (died 612).', 'h': {'pos': (18, 46)}, 't': {'pos': (78, 91)}})
